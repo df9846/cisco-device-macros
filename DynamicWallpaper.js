@@ -2,15 +2,15 @@ import xapi from 'xapi';
 
 // Mapping color names to URLs
 const wallpaperURLs = {
-  Red:    'Your_URL_red_base64.txt',
-  Green:  'Your_URL_green_base64.txt',
-  Yellow: 'Your_URL_yellow_base64.txt'
+  Red:    'Your_image_URL_red',
+  Green:  'Your_image_URL_green',
+  Yellow: 'Your_image_URL_yellow'
 };
 
 const customIdMap = {
-  Red: '10',
-  Green: '20',
-  Yellow: '30'
+  Red: 'wallpaper_red',
+  Green: 'wallpaper_green',
+  Yellow: 'wallpaper_yellow'
 };
 
 async function fetchAndUpload(color) {
@@ -21,17 +21,7 @@ async function fetchAndUpload(color) {
   }
 
   try {
-    // Do the HTTP GET call using xapi
-    const response = await xapi.Command.HttpClient.Get({ Url: url });
-    const base64 = response.Body;
-
-    await xapi.Command.UserInterface.Branding.Upload(
-      {
-        CustomId: customIdMap[color],
-        Type: 'SchedulerBackground'
-      },
-      base64
-    );
+    await xapi.Command.UserInterface.Branding.Fetch({ CustomId: customIdMap[color], Type: 'SchedulerBackground', url});       
     console.log(`Successfully uploaded wallpaper for ${color}`);
   } catch (err) {
     console.log(`Failed to fetch/upload wallpaper for ${color}: ${err}`);
@@ -49,3 +39,4 @@ xapi.status.get('UserInterface LedControl Color').then(color => {
   console.log('Initial Color Value:', color);
   fetchAndUpload(color);
 });
+
